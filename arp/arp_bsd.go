@@ -89,7 +89,6 @@ func parseArpTable(buf []byte) ([]Entry, error) {
 	table := make([]Entry, 0)
 
 	offset := 0
-	hexstr := ""
 	for offset < len(buf) {
 		header := (*syscall.RtMsghdr)(unsafe.Pointer(&buf[offset]))
 		ipAddrPtr := offset + syscall.SizeofRtMsghdr
@@ -116,15 +115,8 @@ func parseArpTable(buf []byte) ([]Entry, error) {
 
 		table = append(table, Entry{IPAddr: ip, HwAddr: hwAddr})
 
-		if offset == 0 {
-			for i := 0; i < int(header.Msglen); i++ {
-				hexstr = hexstr + fmt.Sprintf("%02x", uint8(*(*uint8)(unsafe.Pointer(&buf[i]))))
-			}
-		}
-
 		offset = offset + int(header.Msglen)
 	}
 
-	fmt.Println(hexstr)
 	return table, nil
 }
