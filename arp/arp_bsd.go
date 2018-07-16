@@ -109,11 +109,9 @@ func parseArpTable(buf []byte) ([]Entry, error) {
 		ip := net.IPv4(ipAddr.addr[0], ipAddr.addr[1], ipAddr.addr[2], ipAddr.addr[3])
 		hwAddr, err := net.ParseMAC(strings.Join(hwAddrs, ":"))
 
-		if err != nil {
-			return nil, err
+		if err == nil {
+			table = append(table, Entry{IPAddr: ip, HwAddr: hwAddr})
 		}
-
-		table = append(table, Entry{IPAddr: ip, HwAddr: hwAddr})
 
 		offset = offset + int(header.Msglen)
 	}
